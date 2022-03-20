@@ -3,7 +3,7 @@ package protocol
 import (
         "errors"
         "encoding/json"
-        "github.com/hlhv/fsock/fsock"
+        "github.com/hlhv/fsock"
 )
 
 type FrameKind byte
