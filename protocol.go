@@ -190,7 +190,7 @@ func MarshalFrame (
 
 /* WriteMarshalFrame marshals and writes a Frame.
  */
-func WriteMarshalFrame (writer fsock.Writer, frame Frame) (nn int, err error) {
+func WriteMarshalFrame (writer *fsock.Writer, frame Frame) (nn int, err error) {
         frameData, err := MarshalFrame(frame)
         if err != nil { return 0, err }
         return writer.WriteFrame(frameData)
