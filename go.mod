@@ -1,4 +1,4 @@
-module github.com/hlhv/protocol/protocol
+module github.com/hlhv/protocol
 
 go 1.17
 
