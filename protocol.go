@@ -130,7 +130,7 @@ func (frame *FrameHTTPResEnd)  Kind () FrameKind { return FrameKindHTTPResEnd  }
 func (frame *FrameHTTPReqBody) GetData () []byte { return frame.Data }
 func (frame *FrameHTTPResBody) GetData () []byte { return frame.Data }
 
-/* parseFrame splits a frame into its kind and its data. Unmarshaling should be
+/* ParseFrame splits a frame into its kind and its data. Unmarshaling should be
  * conducted by the handler.
  */
 func ParseFrame (frameData []byte) (kind FrameKind, data []byte, err error) {
@@ -138,7 +138,7 @@ func ParseFrame (frameData []byte) (kind FrameKind, data []byte, err error) {
         return FrameKind(frameData[0]), frameData[1:], nil
 }
 
-/* readParseFrame reads a frame from an fsock reader and parses it.
+/* ReadParseFrame reads a frame from an fsock reader and parses it.
  */
 func ReadParseFrame (
         reader *fsock.Reader,
@@ -152,7 +152,7 @@ func ReadParseFrame (
         return ParseFrame(frame)
 }
 
-/* marshalFrame takes in a struct satisfying the Frame interface and endcodes it
+/* MarshalFrame takes in a struct satisfying the Frame interface and endcodes it
  * into a valid frame.
  */
 func MarshalFrame (
@@ -186,4 +186,12 @@ func MarshalFrame (
         copy(frameData[1:], frameData)
         frameData[0] = byte(frame.Kind())
         return
+}
+
+/* WriteMarshalFrame marshals and writes a Frame.
+ */
+func WriteMarshalFrame (writer fsock.Writer, frame Frame) (nn int, err error) {
+        frameData, err := MarshalFrame(frame)
+        if err != nil { return 0, err }
+        return writer.WriteFrame(frameData)
 }
