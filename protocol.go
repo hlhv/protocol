@@ -82,7 +82,7 @@ type FrameHTTPReqHead struct {
         Port       int                  `json:"port"`
         Path       string               `json:"path"`
         Fragment   string               `json:"fragment"`
-        Query      map[string] string   `json:"query"`
+        Query      map[string] []string `json:"query"`
 
         Proto      string               `json:"proto"`
         ProtoMajor int                  `json:"protoMajor"`
