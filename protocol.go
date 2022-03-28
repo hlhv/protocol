@@ -14,6 +14,7 @@ const (
          */
         // authentication/setup
         FrameKindIAm         FrameKind = 0x00
+        FrameKindKey         FrameKind = 0x01
         FrameKindAccept      FrameKind = 0x08
 
         // mounting
@@ -53,6 +54,10 @@ type DataFrame interface {
 type FrameIAm struct {
         ConnKind int    `json:"connKind"`
         Uuid     string `json:"uuid"`
+}
+
+type FrameKey struct {
+        Key string `json:"key"`
 }
 
 type FrameAccept struct {
@@ -111,6 +116,7 @@ type FrameHTTPResEnd struct {}
 
 // frame kind getters
 func (frame *FrameIAm)         Kind () FrameKind { return FrameKindIAm    }
+func (frame *FrameKey)         Kind () FrameKind { return FrameKindKey    }
 func (frame *FrameAccept)      Kind () FrameKind { return FrameKindAccept }
 
 func (frame *FrameMount)       Kind () FrameKind { return FrameKindMount   }
