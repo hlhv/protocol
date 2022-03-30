@@ -62,6 +62,7 @@ type FrameKey struct {
 
 type FrameAccept struct {
         Uuid string `json:"uuid"`
+        Key  string `json:"key"`
 }
 
 type FrameMount struct {
