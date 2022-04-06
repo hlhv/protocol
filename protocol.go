@@ -14,7 +14,6 @@ const (
          */
         // authentication/setup
         FrameKindIAm         FrameKind = 0x00
-        FrameKindKey         FrameKind = 0x01
         FrameKindAccept      FrameKind = 0x08
 
         // mounting
@@ -54,10 +53,7 @@ type DataFrame interface {
 type FrameIAm struct {
         ConnKind int    `json:"connKind"`
         Uuid     string `json:"uuid"`
-}
-
-type FrameKey struct {
-        Key string `json:"key"`
+        Key      string `json:"key"`
 }
 
 type FrameAccept struct {
@@ -70,32 +66,30 @@ type FrameMount struct {
         Path string `json:"path"`
 }
 
-type FrameUnmount struct {
-        Host string `json:"host"`
-        Path string `json:"path"`
-}
+type FrameUnmount struct { }
 
 type FrameNeedBand struct {
         Count int `json:"count"`
 }
 
 type FrameHTTPReqHead struct {
-        RemoteAddr string               `json:"remoteAddr"`
-        Method     string               `json:"method"`
+        RemoteAddrReal string               `json:"remoteAddrReal"`
+        RemoteAddr     string               `json:"remoteAddr"`
+        Method         string               `json:"method"`
 
-        Scheme     string               `json:"scheme"`
-        Host       string               `json:"host"`
-        Port       int                  `json:"port"`
-        Path       string               `json:"path"`
-        Fragment   string               `json:"fragment"`
-        Query      map[string] []string `json:"query"`
+        Scheme         string               `json:"scheme"`
+        Host           string               `json:"host"`
+        Port           int                  `json:"port"`
+        Path           string               `json:"path"`
+        Fragment       string               `json:"fragment"`
+        Query          map[string] []string `json:"query"`
 
-        Proto      string               `json:"proto"`
-        ProtoMajor int                  `json:"protoMajor"`
-        ProtoMinor int                  `json:"protoMinor"`
+        Proto          string               `json:"proto"`
+        ProtoMajor     int                  `json:"protoMajor"`
+        ProtoMinor     int                  `json:"protoMinor"`
 
-        Headers    map[string] []string `json:"headers"`
-        Form       map[string] []string `json:"values"`
+        Headers        map[string] []string `json:"headers"`
+        Form           map[string] []string `json:"values"`
 }
 
 type FrameHTTPReqBody struct {
@@ -117,7 +111,6 @@ type FrameHTTPResEnd struct {}
 
 // frame kind getters
 func (frame *FrameIAm)         Kind () FrameKind { return FrameKindIAm    }
-func (frame *FrameKey)         Kind () FrameKind { return FrameKindKey    }
 func (frame *FrameAccept)      Kind () FrameKind { return FrameKindAccept }
 
 func (frame *FrameMount)       Kind () FrameKind { return FrameKindMount   }
