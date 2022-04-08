@@ -28,9 +28,10 @@ const (
         FrameKindHTTPReqBody FrameKind = 0x31
         FrameKindHTTPReqEnd  FrameKind = 0x32
 
-        FrameKindHTTPResHead FrameKind = 0x38
-        FrameKindHTTPResBody FrameKind = 0x39
-        FrameKindHTTPResEnd  FrameKind = 0x3A
+        FrameKindHTTPResWant FrameKind = 0x38
+        FrameKindHTTPResHead FrameKind = 0x39
+        FrameKindHTTPResBody FrameKind = 0x3A
+        FrameKindHTTPResEnd  FrameKind = 0x3B
 )
 
 const (
@@ -89,7 +90,6 @@ type FrameHTTPReqHead struct {
         ProtoMinor     int                  `json:"protoMinor"`
 
         Headers        map[string] []string `json:"headers"`
-        Form           map[string] []string `json:"values"`
 }
 
 type FrameHTTPReqBody struct {
@@ -97,6 +97,8 @@ type FrameHTTPReqBody struct {
 }
 
 type FrameHTTPReqEnd struct {}
+
+type FrameHTTPResWant struct {}
 
 type FrameHTTPResHead struct {
         StatusCode int                  `json:"statusCode"`
@@ -122,6 +124,7 @@ func (frame *FrameHTTPReqHead) Kind () FrameKind { return FrameKindHTTPReqHead }
 func (frame *FrameHTTPReqBody) Kind () FrameKind { return FrameKindHTTPReqBody }
 func (frame *FrameHTTPReqEnd)  Kind () FrameKind { return FrameKindHTTPReqEnd  }
 
+func (frame *FrameHTTPResWant) Kind () FrameKind { return FrameKindHTTPResWant }
 func (frame *FrameHTTPResHead) Kind () FrameKind { return FrameKindHTTPResHead }
 func (frame *FrameHTTPResBody) Kind () FrameKind { return FrameKindHTTPResBody }
 func (frame *FrameHTTPResEnd)  Kind () FrameKind { return FrameKindHTTPResEnd  }
