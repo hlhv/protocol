@@ -98,7 +98,9 @@ type FrameHTTPReqBody struct {
 
 type FrameHTTPReqEnd struct {}
 
-type FrameHTTPResWant struct {}
+type FrameHTTPResWant struct {
+        MaxSize int `json:"maxSize"`
+}
 
 type FrameHTTPResHead struct {
         StatusCode int                  `json:"statusCode"`
