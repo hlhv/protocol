@@ -124,7 +124,7 @@ type FrameHTTPReqHead struct {
 
 /* FrameHTTPReqBody is sent from the queen to the client cell after the cell
  * asks for the HTTP body. It contains a single chunk of the body, and is often
- * sent mulitple times in a row. The cell should stitch these together until
+ * sent multiple times in a row. The cell should stitch these together until
  * it receives FrameHTTPReqEnd.
  */
 type FrameHTTPReqBody struct {
