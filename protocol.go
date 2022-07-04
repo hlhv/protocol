@@ -6,6 +6,8 @@ import (
 	"github.com/hlhv/fsock"
 )
 
+/* FrameKind determines what a Frame interface should be cast to.
+ */
 type FrameKind byte
 
 const (
@@ -34,6 +36,9 @@ const (
 	FrameKindHTTPResEnd  FrameKind = 0x3B
 )
 
+/* A connection can be for a cell, or a band. These constants store the
+ * connection kind numbers.
+ */
 const (
 	/* these numbers are part of the protocol and incredibly importatnt. Do
 	 * not make this an enum with iota.
@@ -42,37 +47,62 @@ const (
 	ConnKindBand = 0x1
 )
 
+/* Frame represents a singular block of data sent between cells.
+ */
 type Frame interface {
 	Kind() FrameKind
 }
 
+/* DataFrame is a specific type of frame which can store arbitrary data.
+ */
 type DataFrame interface {
 	GetData() []byte
 }
 
-// frame kind structs
+/* FrameIAm is sent from the client cell to the queen in order to initiate a
+ * connection.
+ */
 type FrameIAm struct {
 	ConnKind int    `json:"connKind"`
 	Uuid     string `json:"uuid"`
 	Key      string `json:"key"`
 }
 
+/* FrameAccept is sent from the queen to the client cell, assigning the cell a
+ * UUID and session key that it can use to create bands later.
+ */
 type FrameAccept struct {
 	Uuid string `json:"uuid"`
 	Key  string `json:"key"`
 }
 
+/* FrameMount is sent from the client cell to the queen. It contains information
+ * about the location the cell wants to mount on.
+ */
 type FrameMount struct {
 	Host string `json:"host"`
 	Path string `json:"path"`
 }
 
+/* FrameUnmount is sent from the client cell to the queen. Upon receiving this,
+ * the queen will unmount the cell from its current mount point.
+ */
 type FrameUnmount struct{}
 
+/* FrameNeedBand is sent from the queen to the client cell when the queen
+ * detects that more bands are needed to keep the connection running smoothly.
+ * The cell is expected to immediately create and connect a new band to the
+ * queen.
+ */
 type FrameNeedBand struct {
 	Count int `json:"count"`
 }
 
+/* FrameHTTPReqHead is sent from the queen to the client cell when the queen
+ * receives an HTTP request and has determined that this cell should handle it.
+ * It contains extensive information about the request. If the cell wants the
+ * HTTP body to be sent to it, it must specifically request it.
+ */
 type FrameHTTPReqHead struct {
 	RemoteAddrReal string `json:"remoteAddrReal"`
 	RemoteAddr     string `json:"remoteAddr"`
@@ -92,28 +122,55 @@ type FrameHTTPReqHead struct {
 	Headers map[string][]string `json:"headers"`
 }
 
+/* FrameHTTPReqBody is sent from the queen to the client cell after the cell
+ * asks for the HTTP body. It contains a single chunk of the body, and is often
+ * sent mulitple times in a row. The cell should stitch these together until
+ * it receives FrameHTTPReqEnd.
+ */
 type FrameHTTPReqBody struct {
 	Data []byte
 }
 
+/* FrameHTTPReqEnd is sent from the queen to the client cell when there is no
+ * more HTTP body data left.
+ */
 type FrameHTTPReqEnd struct{}
 
+/* FrameHTTPResWant is sent from the client cell to the queen as a request for
+ * the HTTP request body data. The cell must specify a maximum size. The queen,
+ * upon receiving this, will begin sending the HTTP body in chunks.
+ */
 type FrameHTTPResWant struct {
 	MaxSize int `json:"maxSize"`
 }
 
+/* FrameHTTPResHead is sent from the client cell to the queen. It contains
+ * information such as the status code, and headers. It signals to the queen
+ * that it should begin responding to the HTTP client.
+ */
 type FrameHTTPResHead struct {
 	StatusCode int                 `json:"statusCode"`
 	Headers    map[string][]string `json:"headers"`
 }
 
+/* FrameHTTPResBody is sent from the client cell to the queen. It contains a
+ * chunk of the HTTP response body data that should be written to the client.
+ * The queen, upon receiving this, should send it to the HTTP client. This frame
+ * should not precede FrameHTTPResHead.
+ */
 type FrameHTTPResBody struct {
 	Data []byte
 }
 
+/* FrameHTTPResEnd is sent from the client cell to the queen as a signal that
+ * the entirety of the HTTP response body has been sent, and the connection to
+ * the HTTP client should be closed.
+ */
 type FrameHTTPResEnd struct{}
 
-// frame kind getters
+/* These functions return the frame kind from frame structs so that it can be
+ * determined which frame struct to cast a Frame interface to.
+ */
 func (frame *FrameIAm) Kind() FrameKind    { return FrameKindIAm }
 func (frame *FrameAccept) Kind() FrameKind { return FrameKindAccept }
 
@@ -131,7 +188,8 @@ func (frame *FrameHTTPResHead) Kind() FrameKind { return FrameKindHTTPResHead }
 func (frame *FrameHTTPResBody) Kind() FrameKind { return FrameKindHTTPResBody }
 func (frame *FrameHTTPResEnd) Kind() FrameKind  { return FrameKindHTTPResEnd }
 
-// frame data getters
+/* These functions return the arbitrary data stored in data frames.
+ */
 func (frame *FrameHTTPReqBody) GetData() []byte { return frame.Data }
 func (frame *FrameHTTPResBody) GetData() []byte { return frame.Data }
 
