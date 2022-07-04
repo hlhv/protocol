@@ -51,3 +51,35 @@ paths that other cells are mounted on).
 
 To un-mount, the client must send a frame of type FrameUnmount. This frame
 carries no data.
+
+## HTTPS Requests
+
+All frames mentioned in this section are sent over bands.
+
+Upon receiving an HTTPS request, the queen directs information about the request
+head to the proper cell in the form of a frame of type FrameHTTPReqHead.
+
+This frame contains no request body data. If the client wants this data, it must
+ask for it by sending a frame of type FrameHTTPResWant, specifying the maximum
+length of the request body. The queen will then send the request body data in
+chunks via frames of type FrameHTTPReqBody, ending with a frame of type
+FrameHTTPReqHead. The cell is expected to stitch all body data frames together
+in order in which they are received.
+
+Then, the client must send a frame of type FrameHTTPResHead, containing the HTTP
+status code of the response and a map containing headers. After this, the client
+must send the response body in chunks via frames of type FrameHTTPResBody,
+ending with a frame of type FrameHTTPResEnd.
+
+## Band Requests
+
+When there are no available bands to handle an HTTP request, the queen will
+request that the client connect another band by sending a frame of type
+FrameNeedBand over the leash. This frame will contain the number of new bands to
+create. It is important that the client immediately respond to this request,
+because the queen waits until the band has connected to resume fulfilling the
+HTTP request.
+
+The client should connect new bands in the same way as connecting as a cell,
+but by specifying a connection kind of ConnKindBand (aka 0x1), and specifying
+the connection UUID and connection key.
