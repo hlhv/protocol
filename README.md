@@ -59,7 +59,10 @@ carries no data.
 All frames mentioned in this section are sent over bands.
 
 Upon receiving an HTTPS request, the queen directs information about the request
-head to the proper cell in the form of a frame of type FrameHTTPReqHead.
+head to the proper cell in the form of a frame of type FrameHTTPReqHead. The
+request path is included in this information, but it starts at the cell's
+mountpoint. For example, a request for `@/photos/dinosaurs/` to a cell mounted on
+`@/photos/` is sent to the cell as `/dinosaurs/`.
 
 This frame contains no request body data. If the client wants this data, it must
 ask for it by sending a frame of type FrameHTTPResWant, specifying the maximum
