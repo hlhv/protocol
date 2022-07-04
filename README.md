@@ -1,5 +1,7 @@
 # protocol
 
+[![A+ Golang report card.](https://img.shields.io/badge/go%20report-A+-brightgreen.svg?style=flat)](https://goreportcard.com/report/github.com/hlhv/protocol)
+
 This module contains functionality to implement the current HLHV cell-to-cell
 communication protocol.
 
