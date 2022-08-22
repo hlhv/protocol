@@ -119,7 +119,8 @@ type FrameHTTPReqHead struct {
 	ProtoMajor int    `json:"protoMajor"`
 	ProtoMinor int    `json:"protoMinor"`
 
-	Headers map[string][]string `json:"headers"`
+	Headers map[string][] string `json:"headers"`
+	Cookies map[string][] string `json:"cookies"`
 }
 
 /* FrameHTTPReqBody is sent from the queen to the client cell after the cell
